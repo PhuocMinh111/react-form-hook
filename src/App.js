@@ -8,7 +8,6 @@ function App() {
   return (
     <div className="container">
       <Form />
-      <Table />
     </div>
   );
 }

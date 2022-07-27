@@ -1,6 +1,19 @@
-import React from 'react'
+import React, { useState } from "react";
+import Table from "./Table";
 
 function Form() {
+  const [state, setState] = useState({
+    userName: "",
+    fullName: "",
+    passWord: "",
+    phoneNumber: "",
+    email: "",
+    type: ""
+  });
+  function handleChange(e) {
+    const { name, value } = e.target;
+    setState({ ...state, [name]: value });
+  }
   return (
     <div className="w-75 mx-auto mt-5">
       <div className="card p-0">
@@ -13,37 +26,72 @@ function Form() {
               <div className="col-6">
                 <div className="form-group">
                   <label>Username</label>
-                  <input type="text" className="form-control" />
+                  <input
+                    name="userName"
+                    value={state.userName}
+                    onChange={handleChange}
+                    type="text"
+                    className="form-control"
+                  />
                 </div>
               </div>
               <div className="col-6">
                 <div className="form-group">
                   <label>Full Name</label>
-                  <input type="text" className="form-control" />
+                  <input
+                    name="fullName"
+                    onChange={handleChange}
+                    value={state.fullName}
+                    type="text"
+                    className="form-control"
+                  />
                 </div>
               </div>
               <div className="col-6">
                 <div className="form-group">
                   <label>Password</label>
-                  <input type="text" className="form-control" />
+                  <input
+                    name="passWord"
+                    onChange={handleChange}
+                    value={state.passWord}
+                    type="text"
+                    className="form-control"
+                  />
                 </div>
               </div>
               <div className="col-6">
                 <div className="form-group">
                   <label>Phone Number</label>
-                  <input type="text" className="form-control" />
+                  <input
+                    type="text"
+                    name="phoneNumber"
+                    value={state.phoneNumber}
+                    onChange={handleChange}
+                    className="form-control"
+                  />
                 </div>
               </div>
               <div className="col-6">
                 <div className="form-group">
                   <label>Email</label>
-                  <input type="text" className="form-control" />
+                  <input
+                    name="email"
+                    value={state.email}
+                    onChange={handleChange}
+                    type="text"
+                    className="form-control"
+                  />
                 </div>
               </div>
               <div className="col-6">
                 <div className="form-group">
                   <label>Type</label>
-                  <select className="form-control">
+                  <select
+                    name="type"
+                    value={state.type}
+                    onChange={handleChange}
+                    className="form-control"
+                  >
                     <option>Client</option>
                     <option>Admin</option>
                   </select>
@@ -79,50 +127,10 @@ function Form() {
             </div>
           </div>
         </div>
-        <div className="card-body">
-          <table class="table">
-            <thead>
-              <tr>
-                <th>No.</th>
-                <th>Username</th>
-                <th>Full Name</th>
-                <th>Email</th>
-                <th>Phone Number</th>
-                <th>Type</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr className='bg-light'>
-                <td>1</td>
-                <td>man.nguyen</td>
-                <td>Man Ng</td>
-                <td>man.nguyen@gmail.com</td>
-                <td>085512123123.</td>
-                <td>Client</td>
-                <td>
-                  <button className="btn btn-info mr-2">EDIT</button>
-                  <button className="btn btn-danger">DELETE</button>
-                </td>
-              </tr>
-              <tr>
-                <td>2</td>
-                <td>khai.tran</td>
-                <td>Khai Tran</td>
-                <td>khai.tran@gmail.com</td>
-                <td>085512456456</td>
-                <td>Admin</td>
-                <td>
-                  <button className="btn btn-info mr-2">EDIT</button>
-                  <button className="btn btn-danger">DELETE</button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+        <Table />
       </div>
     </div>
-  )
+  );
 }
 
-export default Form
+export default Form;
