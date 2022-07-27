@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Table from "./Table";
+import { useDispatch, useSelector } from "react-redux";
 
 function Form() {
   const [state, setState] = useState({
@@ -10,9 +11,25 @@ function Form() {
     email: "",
     type: ""
   });
+  const dispatch = useDispatch();
+
   function handleChange(e) {
     const { name, value } = e.target;
     setState({ ...state, [name]: value });
+  }
+  function handleSubmit(e) {
+    e.preventDefault();
+    console.log("add");
+
+    dispatch({ type: "ADD", payload: state });
+    setState({
+      userName: "",
+      fullName: "",
+      passWord: "",
+      phoneNumber: "",
+      email: "",
+      type: ""
+    });
   }
   return (
     <div className="w-75 mx-auto mt-5">
@@ -21,7 +38,7 @@ function Form() {
           REGISTER FORM
         </div>
         <div className="card-body">
-          <form>
+          <form onSubmit={handleSubmit}>
             <div className="row">
               <div className="col-6">
                 <div className="form-group">
@@ -98,11 +115,13 @@ function Form() {
                 </div>
               </div>
             </div>
+            <div className="card-footer text-muted">
+              <button type="submit" className="btn btn-warning mr-2">
+                SAVE
+              </button>
+              <button className="btn btn-outline-dark">RESET</button>
+            </div>
           </form>
-        </div>
-        <div className="card-footer text-muted">
-          <button className="btn btn-warning mr-2">SAVE</button>
-          <button className="btn btn-outline-dark">RESET</button>
         </div>
       </div>
       <div className="card p-0 mt-3">
