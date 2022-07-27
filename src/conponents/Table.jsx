@@ -21,7 +21,7 @@ function Table() {
           {tableHook.list.map((user, index) => (
             <tr
               key={index}
-              className={index % 2 === 0 ? "bg-light" : "bg-dark"}
+              className={index % 2 === 0 ? "bg-light" : "bg-secondary"}
             >
               <td>{index + 1}</td>
               <td>{user.userName}</td>

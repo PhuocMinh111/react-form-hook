@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Table from "./Table";
 import { useDispatch, useSelector } from "react-redux";
-
-function Form() {
+import validator from "validator";
+export default function Form() {
   const [state, setState] = useState({
     userName: "",
     fullName: "",
@@ -11,6 +11,8 @@ function Form() {
     email: "",
     type: ""
   });
+  const [err, setErr] = useState({});
+  const [isSubmit, setSubmit] = useState(true);
   const dispatch = useDispatch();
 
   function handleChange(e) {
@@ -20,8 +22,13 @@ function Form() {
   function handleSubmit(e) {
     e.preventDefault();
     console.log("add");
+    checkValid();
 
-    dispatch({ type: "ADD", payload: state });
+    for (const item in err) {
+      if (err[item] !== "") setSubmit(false);
+      return;
+    }
+
     setState({
       userName: "",
       fullName: "",
@@ -31,6 +38,31 @@ function Form() {
       type: ""
     });
   }
+  function checkValid() {
+    const error = {};
+    const { userName, fullName, passWord, phoneNumber, email, type } = state;
+    if (!userName) {
+      error.userName = `user name is required`;
+    }
+    if (!fullName) {
+      error.fullName = `full  name is required`;
+    }
+    if (!passWord) {
+      error.passWord = `password is required`;
+    }
+    if (!phoneNumber) {
+      error.phoneNumber = `phone number is required`;
+    }
+    if (!email) {
+      error.email = `email is required`;
+    }
+
+    console.log(error);
+    setErr({ ...error });
+  }
+  useEffect(() => {
+    if (isSubmit) dispatch({ type: "ADD", payload: state });
+  }, [isSubmit, err]);
   return (
     <div className="w-75 mx-auto mt-5">
       <div className="card p-0">
@@ -50,6 +82,9 @@ function Form() {
                     type="text"
                     className="form-control"
                   />
+                  {err.userName && (
+                    <span className="text-danger">* {err.userName}</span>
+                  )}
                 </div>
               </div>
               <div className="col-6">
@@ -62,6 +97,9 @@ function Form() {
                     type="text"
                     className="form-control"
                   />
+                  {err.fullName && (
+                    <span className="text-danger">* {err.fullName}</span>
+                  )}
                 </div>
               </div>
               <div className="col-6">
@@ -74,6 +112,9 @@ function Form() {
                     type="text"
                     className="form-control"
                   />
+                  {err.passWord && (
+                    <span className="text-danger">* {err.passWord}</span>
+                  )}
                 </div>
               </div>
               <div className="col-6">
@@ -86,6 +127,9 @@ function Form() {
                     onChange={handleChange}
                     className="form-control"
                   />
+                  {err.phoneNumber && (
+                    <span className="text-danger">* {err.phoneNumber}</span>
+                  )}
                 </div>
               </div>
               <div className="col-6">
@@ -98,6 +142,9 @@ function Form() {
                     type="text"
                     className="form-control"
                   />
+                  {err.email && (
+                    <span className="text-danger">* {err.email}</span>
+                  )}
                 </div>
               </div>
               <div className="col-6">
@@ -112,6 +159,9 @@ function Form() {
                     <option>Client</option>
                     <option>Admin</option>
                   </select>
+                  {err.type && (
+                    <span className="text-danger">* {err.type}</span>
+                  )}
                 </div>
               </div>
             </div>
@@ -151,5 +201,3 @@ function Form() {
     </div>
   );
 }
-
-export default Form;
