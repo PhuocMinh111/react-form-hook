@@ -12,7 +12,7 @@ export default function Form() {
     type: ""
   });
   const [err, setErr] = useState({});
-  const [isSubmit, setSubmit] = useState(true);
+  const [isSubmit, setSubmit] = useState(false);
   const dispatch = useDispatch();
 
   function handleChange(e) {
@@ -21,23 +21,15 @@ export default function Form() {
   }
   function handleSubmit(e) {
     e.preventDefault();
-    console.log("add");
     checkValid();
-
     for (const item in err) {
-      if (err[item] !== "") setSubmit(false);
-      return;
+      if (err[item] !== "") return;
+      setSubmit(true);
+      // if (value === "" || item) setSubmit(true);
+      // setSubmit(true);
     }
-
-    setState({
-      userName: "",
-      fullName: "",
-      passWord: "",
-      phoneNumber: "",
-      email: "",
-      type: ""
-    });
   }
+
   function checkValid() {
     const error = {};
     const { userName, fullName, passWord, phoneNumber, email, type } = state;
@@ -47,22 +39,44 @@ export default function Form() {
     if (!fullName) {
       error.fullName = `full  name is required`;
     }
+
     if (!passWord) {
       error.passWord = `password is required`;
     }
+
     if (!phoneNumber) {
       error.phoneNumber = `phone number is required`;
+    } else if (!validator.isLength(phoneNumber, { min: 6, max: 12 })) {
+      error.phoneNumber = `phone number must be 6 - 12 numbers`;
+    } else if (!validator.isNumeric(phoneNumber)) {
+      error.phoneNumber = `phone number must be number`;
     }
+
     if (!email) {
       error.email = `email is required`;
+    } else if (!validator.isEmail(email)) {
+      error.email = `email is not correct`;
+    }
+    if (!type) {
+      error.type = `type is required`;
     }
 
     console.log(error);
     setErr({ ...error });
   }
   useEffect(() => {
-    if (isSubmit) dispatch({ type: "ADD", payload: state });
-  }, [isSubmit, err]);
+    if (Object.keys(err).length < 1) {
+      dispatch({ type: "ADD", payload: state });
+      setState({
+        userName: "",
+        fullName: "",
+        passWord: "",
+        phoneNumber: "",
+        email: "",
+        type: ""
+      });
+    }
+  }, [err]);
   return (
     <div className="w-75 mx-auto mt-5">
       <div className="card p-0">
