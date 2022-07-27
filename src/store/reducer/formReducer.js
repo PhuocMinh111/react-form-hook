@@ -10,12 +10,12 @@ export const formReducer = (state = DEFAULT, { type, payload }) => {
       data.push({ ...payload, id: Date.now() });
       return { ...state, list: [...data] };
     case "EDIT":
-      return { ...state, selected: { ...payload } };
+      const selected = state.list.find((item) => item.id === payload);
+      return { ...state, selected: selected };
     case "DEL":
       state.list = state.list.filter((list) => list.id !== payload);
       return { ...state };
-    case "EDIT_USER":
-      console.log("edit");
+    case "CONFIRM_EDIT":
       state.list = state.list.map((ele) => {
         if (ele.maSV === payload.maSV) {
           return payload;

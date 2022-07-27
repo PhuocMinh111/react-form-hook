@@ -29,7 +29,12 @@ function Table() {
               <td>{user.email}</td>
               <td>{user.phoneNumber}</td>
               <td>
-                <button className="btn btn-info mr-2">EDIT</button>
+                <button
+                  onClick={() => dispatch({ type: "EDIT", payload: user.id })}
+                  className="btn btn-info mr-2"
+                >
+                  EDIT
+                </button>
                 <button
                   onClick={() => dispatch({ type: "DEL", payload: user.id })}
                   className="btn btn-danger"
@@ -39,30 +44,6 @@ function Table() {
               </td>
             </tr>
           ))}
-          {/* <tr className="bg-light">
-            <td>1</td>
-            <td>man.nguyen</td>
-            <td>Man Ng</td>
-            <td>man.nguyen@gmail.com</td>
-            <td>085512123123.</td>
-            <td>Client</td>
-            <td>
-              <button className="btn btn-info mr-2">EDIT</button>
-              <button className="btn btn-danger">DELETE</button>
-            </td>
-          </tr>
-          <tr>
-            <td>2</td>
-            <td>khai.tran</td>
-            <td>Khai Tran</td>
-            <td>khai.tran@gmail.com</td>
-            <td>085512456456</td>
-            <td>Admin</td>
-            <td>
-              <button className="btn btn-info mr-2">EDIT</button>
-              <button className="btn btn-danger">DELETE</button>
-            </td>
-          </tr> */}
         </tbody>
       </table>
     </div>

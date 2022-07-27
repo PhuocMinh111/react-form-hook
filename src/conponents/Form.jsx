@@ -14,7 +14,7 @@ export default function Form() {
   const [err, setErr] = useState({});
   const [isSubmit, setSubmit] = useState(false);
   const dispatch = useDispatch();
-
+  const hookState = useSelector((state) => state.formReducer);
   function handleChange(e) {
     const { name, value } = e.target;
     setState({ ...state, [name]: value });
@@ -65,6 +65,10 @@ export default function Form() {
     setErr({ ...error });
   }
   useEffect(() => {
+    if (hookState.selected) {
+      setState({ ...hookState.selected });
+      return;
+    }
     if (Object.keys(err).length < 1) {
       dispatch({ type: "ADD", payload: state });
       setState({
@@ -76,7 +80,7 @@ export default function Form() {
         type: ""
       });
     }
-  }, [err]);
+  }, [err, hookState.selected]);
   return (
     <div className="w-75 mx-auto mt-5">
       <div className="card p-0">
@@ -180,7 +184,11 @@ export default function Form() {
               </div>
             </div>
             <div className="card-footer text-muted">
-              <button type="submit" className="btn btn-warning mr-2">
+              <button
+                disabled={hookState.selected ? true : false}
+                type="submit"
+                className="btn btn-warning mr-2"
+              >
                 SAVE
               </button>
               <button className="btn btn-outline-dark">RESET</button>
