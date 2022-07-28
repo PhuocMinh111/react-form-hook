@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Table from "./Table";
 import { useDispatch, useSelector } from "react-redux";
 import validator from "validator";
+import checkValid from "../validation/validation";
 export default function Form() {
   const [state, setState] = useState({
     userName: "",
@@ -13,63 +14,37 @@ export default function Form() {
   });
   const [err, setErr] = useState({});
   const [isSubmit, setSubmit] = useState(false);
+  const [isEdit, setEdit] = useState(false);
   const dispatch = useDispatch();
   const hookState = useSelector((state) => state.formReducer);
+
   function handleChange(e) {
     const { name, value } = e.target;
     setState({ ...state, [name]: value });
   }
   function handleSubmit(e) {
     e.preventDefault();
-    checkValid();
-    for (const item in err) {
-      if (err[item] !== "") return;
-      setSubmit(true);
-      // if (value === "" || item) setSubmit(true);
-      // setSubmit(true);
-    }
+    if (hookState.selected) setEdit(true);
+    setErr(checkValid(state, hookState.list));
+    setSubmit(true);
+    console.log(err);
+
+    // setErr({});
+    // console.log(err);
   }
 
-  function checkValid() {
-    const error = {};
-    const { userName, fullName, passWord, phoneNumber, email, type } = state;
-    if (!userName) {
-      error.userName = `user name is required`;
-    }
-    if (!fullName) {
-      error.fullName = `full  name is required`;
-    }
-
-    if (!passWord) {
-      error.passWord = `password is required`;
-    }
-
-    if (!phoneNumber) {
-      error.phoneNumber = `phone number is required`;
-    } else if (!validator.isLength(phoneNumber, { min: 6, max: 12 })) {
-      error.phoneNumber = `phone number must be 6 - 12 numbers`;
-    } else if (!validator.isNumeric(phoneNumber)) {
-      error.phoneNumber = `phone number must be number`;
-    }
-
-    if (!email) {
-      error.email = `email is required`;
-    } else if (!validator.isEmail(email)) {
-      error.email = `email is not correct`;
-    }
-    if (!type) {
-      error.type = `type is required`;
-    }
-
-    console.log(error);
-    setErr({ ...error });
-  }
   useEffect(() => {
     if (hookState.selected) {
       setState({ ...hookState.selected });
       return;
     }
-    if (Object.keys(err).length < 1) {
+    if (Object.keys(err).length && isEdit) {
+      dispatch({ type: "CONFIRM_EDIT", payload: state });
+      setErr({});
+      setEdit(false);
+      return;
+    }
+    if (Object.keys(err).length < 1 && isSubmit) {
       dispatch({ type: "ADD", payload: state });
       setState({
         userName: "",
@@ -79,8 +54,10 @@ export default function Form() {
         email: "",
         type: ""
       });
+      setErr({});
+      setSubmit(false);
     }
-  }, [err, hookState.selected]);
+  }, [err, hookState.selected, isEdit]);
   return (
     <div className="w-75 mx-auto mt-5">
       <div className="card p-0">
@@ -185,7 +162,7 @@ export default function Form() {
             </div>
             <div className="card-footer text-muted">
               <button
-                disabled={hookState.selected ? true : false}
+                // disabled={hookState.selected ? true : false}
                 type="submit"
                 className="btn btn-warning mr-2"
               >

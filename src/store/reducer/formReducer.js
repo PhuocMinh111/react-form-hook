@@ -16,10 +16,12 @@ export const formReducer = (state = DEFAULT, { type, payload }) => {
       state.list = state.list.filter((list) => list.id !== payload);
       return { ...state };
     case "CONFIRM_EDIT":
+      console.log("editededited");
       state.list = state.list.map((ele) => {
         if (ele.maSV === payload.maSV) {
           return payload;
         }
+        state.selected = null;
         return ele;
       });
     default:
