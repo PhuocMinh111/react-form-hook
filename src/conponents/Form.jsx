@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Table from "./Table";
 import { useDispatch, useSelector } from "react-redux";
-import validator from "validator";
 import checkValid from "../validation/validation";
 export default function Form() {
   const [state, setState] = useState({
@@ -15,6 +14,7 @@ export default function Form() {
   const [err, setErr] = useState({});
   const [isSubmit, setSubmit] = useState(false);
   const [isEdit, setEdit] = useState(false);
+  const [message, setMessage] = useState("");
   const dispatch = useDispatch();
   const hookState = useSelector((state) => state.formReducer);
 
@@ -24,24 +24,35 @@ export default function Form() {
   }
   function handleSubmit(e) {
     e.preventDefault();
-    if (hookState.selected) setEdit(true);
-    setErr(checkValid(state, hookState.list));
+    if (hookState.selected) {
+      setErr(checkValid(state, hookState.list, true));
+      if (JSON.stringify(state) === JSON.stringify(hookState.selected)) {
+        setMessage("you have not edit yet !");
+        return;
+      }
+      setEdit(true);
+      setMessage("");
+
+      return;
+    }
+    setErr(checkValid(state, hookState.list, false));
     setSubmit(true);
     console.log(err);
-
-    // setErr({});
-    // console.log(err);
   }
 
   useEffect(() => {
-    if (hookState.selected) {
-      setState({ ...hookState.selected });
-      return;
-    }
-    if (Object.keys(err).length && isEdit) {
+    if (Object.keys(err).length < 1 && isEdit) {
       dispatch({ type: "CONFIRM_EDIT", payload: state });
-      setErr({});
       setEdit(false);
+      setState({
+        userName: "",
+        fullName: "",
+        passWord: "",
+        phoneNumber: "",
+        email: "",
+        type: ""
+      });
+      setErr({});
       return;
     }
     if (Object.keys(err).length < 1 && isSubmit) {
@@ -58,6 +69,12 @@ export default function Form() {
       setSubmit(false);
     }
   }, [err, hookState.selected, isEdit]);
+
+  useEffect(() => {
+    if (hookState.selected) {
+      setState({ ...hookState.selected });
+    }
+  }, [hookState]);
   return (
     <div className="w-75 mx-auto mt-5">
       <div className="card p-0">
@@ -71,6 +88,7 @@ export default function Form() {
                 <div className="form-group">
                   <label>Username</label>
                   <input
+                    disabled={hookState.selected ? true : false}
                     name="userName"
                     value={state.userName}
                     onChange={handleChange}
@@ -169,6 +187,7 @@ export default function Form() {
                 SAVE
               </button>
               <button className="btn btn-outline-dark">RESET</button>
+              <span className="d-inline-block ml-4 text-danger">{message}</span>
             </div>
           </form>
         </div>

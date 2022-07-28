@@ -21,9 +21,10 @@ export const formReducer = (state = DEFAULT, { type, payload }) => {
         if (ele.maSV === payload.maSV) {
           return payload;
         }
-        state.selected = null;
         return ele;
       });
+      state.selected = null;
+      return { ...state };
     default:
       return state;
   }

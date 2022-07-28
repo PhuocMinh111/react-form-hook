@@ -1,11 +1,11 @@
 import validator from "validator";
 
-export default function checkValid(state, list) {
+export default function checkValid(state, list, isEdit) {
   const error = {};
   const { userName, fullName, passWord, phoneNumber, email, type } = state;
   if (!userName) {
     error.userName = `user name is required`;
-  } else if (list) {
+  } else if (list && !isEdit) {
     const index = list.findIndex((item) => item.userName === userName);
     if (index !== -1) error.userName = `user name already existed`;
   }
